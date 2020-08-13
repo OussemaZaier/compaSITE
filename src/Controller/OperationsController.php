@@ -25,7 +25,8 @@ class OperationsController extends AbstractController
     {
     	if($request->isXmlHttpRequest()){
     		$donnees = json_decode($request->getContent());
-    		$operation =new Operation();
+    		
+            /**$operation =new Operation();
 
     		$operation->setMontantOperation($donnees->montantOperation);
     		$operation->setReferenceOperation($donnees->referenceOperation);
@@ -38,22 +39,23 @@ class OperationsController extends AbstractController
     		$operation->setAssociatione($donnees->associatione);
     		$operation->setAssociationc($donnees->associationc);
     		$operation->setAssociationt($donnees->associationt);
-    		$operation->setAssociationmp($donnees->associationmp);
+    		$operation->setAssociationmp($donnees->associationmp);**/
+        
 
 
-    		if (($donnees->modeleOperation=="d")or($donnees->modeleOperation=="d")){
+    		if (($donnees->modeleOperation=="d")or($donnees->modeleOperation=="D")){
     			//initialiser une variable compte
     			$compte= new Compte();
     			//chercher le compte qui correspond a l'operation
     			$compte=$this->getDoctrine()->getRepository(Compte::class)->find(getAssociation());
     			//modifier le montant du compte 
-    			$compte->setSoldeCompte(getSoldeCompte()+$operation->getMontantOperation());
+    			$compte->setSoldeCompte(getSoldeCompte()+$donnees->getMontantOperation());
     			//sauvegarder dans la base
     			$em=$this->getDoctrine()->getManager();
     			$em->persist($compte);
     			$em->flush();
-    			$em->persist($operation);
-    			$em->flush();
+    			/**$em->persist($operation);
+    			$em->flush();**/
     		}
     		elseif(($donnees->modeleOperation=="c")or($donnees->modeleOperation=="C")){
     			//initialiser une variable compte
@@ -61,7 +63,7 @@ class OperationsController extends AbstractController
     			//chercher le compte qui correspond a l'operation
     			$compte=$this->getDoctrine()->getRepository(Compte::class)->find(getAssociation());
     			//le solde apres l'extraction de l'argent
-    			$montant1 = ($compte->getSoldeCompte() - $operation->getMontantOperation());
+    			$montant1 = ($compte->getSoldeCompte() - $donnees->getMontantOperation());
     			if($montant1>=0){
     				/**axtraireArgent**/
     				/**modifier le montant du compte liee a l'operation**/
@@ -70,13 +72,13 @@ class OperationsController extends AbstractController
     			$em=$this->getDoctrine()->getManager();
     			$em->persist($compte);
     			$em->flush();
-    			$em->persist($operation);
-    			$em->flush();
+    			/**$em->persist($donnees);
+    			$em->flush();**/
     				
     			}
     			else{
     			/**ERROR**/
-    			/**modifier le montant des 2mpte liee a l'operation**/
+    			
     		}
 
     		}
@@ -90,7 +92,7 @@ class OperationsController extends AbstractController
     			//chercher le compte qui correspond a l'operation
     			$compte2=$this->getDoctrine()->getRepository(Compte::class)->find(getIdCompteTransfer());
     			//le solde apres l'extraction de l'argent
-    			$montant1=$compte->getSoldeCompte()-$operation->getMontantOperation();
+    			$montant1=$compte->getSoldeCompte()-$donnees->getMontantOperation();
     			//argent a transferer
     			$montant2=$compte->getSoldeCompte();
     			if($montant1>=0){
@@ -104,10 +106,12 @@ class OperationsController extends AbstractController
     			$em=$this->getDoctrine()->getManager();
     			$em->persist($compte);
     			$em->flush();
-    			$em->persist($operation);
-    			$em->flush();
+    			
     			$em->persist($compte2);
     			$em->flush();
+
+                /**$em->persist($donnees);
+                $em->flush();**/
     			}
     			else{
     			/**ERROR**/
@@ -117,6 +121,7 @@ class OperationsController extends AbstractController
             return new Response('OK',201);
     		}
             return new Response('Eror',404);
+            
     }
     
 }
